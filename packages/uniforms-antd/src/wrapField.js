@@ -16,6 +16,7 @@ export default function wrapField ({
     showInlineError,
     wrapperCol
 }, children) {
+
     const labelNode = !!label && (
         <span>
             {label}
@@ -36,6 +37,7 @@ export default function wrapField ({
             hasFeedback
             help={showInlineError && error && errorMessage}
             htmlFor={id}
+            id={id}
             label={labelNode}
             labelCol={labelCol}
             required={required}

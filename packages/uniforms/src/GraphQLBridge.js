@@ -131,6 +131,10 @@ export default class GraphQLBridge extends Bridge {
             ...props
         };
 
+        if(fieldType.ofType instanceof graphql.GraphQLEnumType){
+            ready.options = fieldType.ofType.getValues().map(i => ({label: i.name, value: i.value}));
+        }
+
         if (props.label === true && extra.label) {
             ready.label = extra.label;
         } else if (props.label !== undefined && !props.label) {
@@ -174,12 +178,17 @@ export default class GraphQLBridge extends Bridge {
         if (fieldType instanceof graphql.GraphQLList)            return Array;
         if (fieldType instanceof graphql.GraphQLObjectType)      return Object;
         if (fieldType instanceof graphql.GraphQLInputObjectType) return Object;
+        if (fieldType instanceof graphql.GraphQLEnumType) {
+            const isNumber = fieldType.getValues().filter(i => !isNaN(i.value)).length > 0;
+            return isNumber ? Number : String;
+        };
         if (fieldType instanceof graphql.GraphQLScalarType) {
             if (fieldType.name === 'ID')      return String;
             if (fieldType.name === 'Int')     return Number;
             if (fieldType.name === 'Float')   return Number;
             if (fieldType.name === 'String')  return String;
             if (fieldType.name === 'Boolean') return Boolean;
+            if (fieldType.name === 'Date')    return Date;
         }
 
         return fieldType;
